@@ -259,6 +259,10 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * than 2 and should be at least 8 to mesh with assumptions in
      * tree removal about conversion back to plain bins upon
      * shrinkage.
+     * bin 表示hash桶中的元素/单个hash桶
+     * Bins 表示hash桶（多个hash桶）
+     * 对于桶中的元素，使用tree而不是list的元素阈值。当向至少有这么多节点的hash桶中添加元素时，该hash桶就会转为tree。
+     * 该值必须大于2并且至少为8，用来符合移除树节点缩减后转换为普通的hash桶的假设
      * 树化阈值=8
      */
     static final int TREEIFY_THRESHOLD = 8;
@@ -267,6 +271,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * The bin count threshold for untreeifying a (split) bin during a
      * resize operation. Should be less than TREEIFY_THRESHOLD, and at
      * most 6 to mesh with shrinkage detection under removal.
+     * 在扩容操作时，对于一个hash桶中非树化的元素阈值。
+     * 应该小于8最多为6，用来符合在移除操作时的收缩检测
      * 非树化阈值=6
      */
     static final int UNTREEIFY_THRESHOLD = 6;
@@ -276,12 +282,16 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * (Otherwise the table is resized if too many nodes in a bin.)
      * Should be at least 4 * TREEIFY_THRESHOLD to avoid conflicts
      * between resizing and treeification thresholds.
+     *
+     * hash桶树化的最小hash表容量。（否则，如果一个hash桶的元素太多，则会使hash表扩容）
+     * 应该至少为4 * 8，以避免hash表扩容阈值和hash桶树化阈值之间的冲突
      */
     static final int MIN_TREEIFY_CAPACITY = 64;
 
     /**
      * Basic hash bin node, used for most entries.  (See below for
      * TreeNode subclass, and in LinkedHashMap for its Entry subclass.)
+     * 基本的hash桶元素节点，使用entry
      */
     static class Node<K,V> implements Map.Entry<K,V> {
         final int hash;
