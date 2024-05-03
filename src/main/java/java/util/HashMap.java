@@ -409,6 +409,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     transient Set<Map.Entry<K,V>> entrySet;
 
     /**
+     * Test
      * The number of key-value mappings contained in this map.
      */
     transient int size;
