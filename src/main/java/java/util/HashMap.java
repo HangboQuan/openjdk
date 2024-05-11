@@ -711,6 +711,11 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *
      * @return the table
      */
+    /**
+     * 初始化或者扩容一倍表容量。 如果为空，根据字段阈值中保持的初始容量目标进行分配
+     * 否则，因为我们使用的是二次幂展开
+     * @return
+     */
     final Node<K,V>[] resize() {
         Node<K,V>[] oldTab = table;
         int oldCap = (oldTab == null) ? 0 : oldTab.length;
