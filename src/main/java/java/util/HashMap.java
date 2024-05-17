@@ -1260,6 +1260,18 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         return v;
     }
 
+    /**
+     *
+     * @param key key with which the resulting value is to be associated
+     * @param value the non-null value to be merged with the existing value
+     *        associated with the key or, if no existing value or a null value
+     *        is associated with the key, to be associated with the key
+     * @param remappingFunction the function to recompute a value if present
+     * 如果map中不存在key，merge则直接插入到hashmap
+     *    map中存在key，merge则按照remappingFunction合并函数进行合并
+     *
+     * @return
+     */
     @Override
     public V merge(K key, V value,
                    BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
