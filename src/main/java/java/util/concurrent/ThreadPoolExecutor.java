@@ -1362,21 +1362,26 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
          * thread.  If it fails, we know we are shut down or saturated
          * and so reject the task.
          */
+        // ctl的值由两部分组成：高位（前3位）表示线程池的状态 + 低位（后29位）表示当前活动线程的数量
+        // 通过单个原子操作同时更新线程池的状态和线程数量，从而提高效率和线程安全性
+        // runStateOf(int c) 方法可以从ctl的值中提取线程池的状态
+        // workerCountOf(int c) 方法可以从ctl的值中提取线程数量
         int c = ctl.get();
-        if (workerCountOf(c) < corePoolSize) {
-            if (addWorker(command, true))
+        if (workerCountOf(c) < corePoolSize) { // work 线程数 < 核心线程数
+            if (addWorker(command, true)) // 直接创建核心线程，执行任务 不管是否有空闲线程
                 return;
+            // 因为没有使用锁，可能出现并发创建核心线程 走到这里说明核心线程已经创建满了 需要重新获取ctl的值
             c = ctl.get();
         }
-        if (isRunning(c) && workQueue.offer(command)) {
-            int recheck = ctl.get();
-            if (! isRunning(recheck) && remove(command))
-                reject(command);
-            else if (workerCountOf(recheck) == 0)
+        if (isRunning(c) && workQueue.offer(command)) { // 如果线程池还是RUNNING状态 并且任务成功提交到队列中
+            int recheck = ctl.get(); // 再次检查线程池的状态
+            if (! isRunning(recheck) && remove(command)) // 如果是非RUNNING状态，从队列中移除任务
+                reject(command); // 拒绝策略
+            else if (workerCountOf(recheck) == 0) // 如果线程池中没有工作线程，创建一个非核心线程  兼容核心线程数 == 0的情况
                 addWorker(null, false);
         }
-        else if (!addWorker(command, false))
-            reject(command);
+        else if (!addWorker(command, false)) // 核心线程数已满 阻塞队列已满 尝试创建非核心线程执行任务
+            reject(command); // 非核心线程创建失败 说明线程数达到maximumPoolSize 执行拒绝策略
     }
 
     /**
