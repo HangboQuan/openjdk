@@ -9,9 +9,6 @@ import java.util.List;
  * @date 2024/3/11 20:22
  */
 public class ArrayListTest {
-
-
-
     public static void main(String[] args) {
         List<Integer> ans = new ArrayList<>();
         ans.add(1);
